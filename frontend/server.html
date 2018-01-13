@@ -172,7 +172,8 @@
 											<div class="col-sm-12">
 												<div class="form-group">
 													<label>Tracks</label>
-													<select class="form-control" ng-model="selectedTracks" ng-options="track.name as track.name for track in tracks" ng-change="trackChanged()"></select>
+
+													<select class="form-control" ng-model="selectedTracks" ng-options="track as track.name for track in tracks" ng-change="trackChanged()"></select>
 												</div>
 											</div>
 										</div>

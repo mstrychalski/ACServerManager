@@ -573,21 +573,33 @@ app.get('/api/tracks', function (req, res) {
 		var trackNames = fs.readdirSync(contentPath + "/tracks");
 		var tracks = [];
 
-		for (var trackName in trackNames) {
-			var track = {
-				name: trackNames[trackName]
-			};
-
-			try {
-				var configs = getDirectories(contentPath + "/tracks/" + trackNames[trackName] + "/ui");
-				track.configs = configs;
-			}
-			catch (e) {
-				//console.log(e);
-			}
-
-			tracks.push(track);
-		}
+        for (var trackName in trackNames) {
+            var uiTrackPath = contentPath + '/tracks/' + trackNames[trackName] + '/ui/ui_track.json';
+            if(fs.existsSync(uiTrackPath)){
+                trackDetails = JSON.parse(fs.readFileSync(uiTrackPath));
+                var track = {
+                    name: trackDetails['name'],
+					trackName: trackNames[trackName]
+                };
+                tracks.push(track);
+            }else{
+                uiTrackPath = contentPath + "/tracks/" + trackNames[trackName] + '/ui';
+                var subtrackNames = fs.readdirSync(uiTrackPath);
+                for (var subtrackName in subtrackNames){
+                    var jsonPath = uiTrackPath + '/' + subtrackNames[subtrackName] + '/ui_track.json';
+                    if(fs.existsSync(jsonPath)){
+                        trackDetails = JSON.parse(fs.readFileSync(jsonPath));
+                        console.log(trackDetails['name']);
+                    }
+                    var track = {
+                        name: trackDetails['name'],
+                        trackName: trackNames[trackName],
+						config: subtrackNames[subtrackName]
+                    };
+                    tracks.push(track);
+                }
+            }
+        }
 
 		res.status(200);
 		res.send(tracks);

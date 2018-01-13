@@ -192,7 +192,11 @@ angular.module('acServerManager')
 
 			try {
 				$scope.selectedCars = data.CARS.split(';');
-				$scope.selectedTracks = data.TRACK; //TODO: Multi-track
+
+				var trackFilter = { trackName: data.TRACK };
+				if(data.CONFIG_TRACK) trackFilter.config = data.CONFIG_TRACK;
+
+				$scope.selectedTracks = findInArray($scope.tracks, trackFilter);
 				$scope.selectedTyres = data.LEGAL_TYRES.split(';');
 			
 				data.LOOP_MODE = data.LOOP_MODE == 1;
@@ -300,26 +304,26 @@ angular.module('acServerManager')
 		}
 		
 		$scope.trackChanged = function() {
-			var track = findInArray($scope.tracks, {name: $scope.selectedTracks})
+			var track = $scope.selectedTracks;
 			if (track !== null) {
-				if (track.configs && track.configs.length) {
-					$scope.configs = track.configs;
-					$scope.server.CONFIG_TRACK = $scope.configs[0];
+				if (track.config) {
+					$scope.config = track.config;
+					$scope.server.CONFIG_TRACK = $scope.config;
 					
-					TrackService.GetTrackDetails(track.name, $scope.server.CONFIG_TRACK, function(data) {
+					TrackService.GetTrackDetails(track.trackName, $scope.server.CONFIG_TRACK, function(data) {
 						$scope.trackDetails = data;
 					});
 					
-					$scope.trackImage = '/api/tracks/' + $scope.selectedTracks + '/' + $scope.server.CONFIG_TRACK + '/image';
+					$scope.trackImage = '/api/tracks/' + track.trackName + '/' + $scope.server.CONFIG_TRACK + '/image';
 				} else {
 					$scope.configs = null;
 					$scope.server.CONFIG_TRACK = '';
 					
-					TrackService.GetTrackDetails(track.name, null, function(data) {
+					TrackService.GetTrackDetails(track.trackName, null, function(data) {
 						$scope.trackDetails = data;
 					});
 					
-					$scope.trackImage = '/api/tracks/' + $scope.selectedTracks + '/image';
+					$scope.trackImage = '/api/tracks/' + track.trackName + '/image';
 				}
 			}
 		};
@@ -340,7 +344,7 @@ angular.module('acServerManager')
 				data.PICKUP_MODE_ENABLED = $scope.server.PICKUP_MODE_ENABLED ? 1 : 0;
 				data.REGISTER_TO_LOBBY = $scope.server.REGISTER_TO_LOBBY ? 1 : 0;
 				data.CARS = $scope.selectedCars.join(';');
-				data.TRACK = $scope.selectedTracks; //TODO: Multi-track
+				data.TRACK = $scope.selectedTracks.trackName; //TODO: Multi-track
 				data.SUN_ANGLE = getSunAngle($scope.hours, $scope.mins);
 
 				if (typeof $scope.tyres.length === 'undefined' || !$scope.tyres.length){
