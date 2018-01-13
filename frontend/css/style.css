@@ -98,3 +98,38 @@ body { padding-top: 0px;}
 .checkbox input {
 	display: block; !important
 }
+
+.car-images-container .car-image {
+    display: inline-block;
+    position: relative;
+    margin: 5px;
+}
+
+.car-images-container .car-image .delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.car-images-container .car-image .delete:hover {
+    color: #bc2e32;
+}
+
+.car-images-container .car-image p {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    color: white;
+    margin: 0;
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 12px;
+    padding: 5px;
+}
+
+.car-images-container .car-image img {
+    max-height: 100px;
+}

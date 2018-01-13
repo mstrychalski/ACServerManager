@@ -179,25 +179,28 @@ angular.module('acServerManager')
 			});
 		});
 		
-		CarService.GetCars(function (data) {
-			$scope.cars = data;
-		});
-		
-		TrackService.GetTracks(function (data) {
-			$scope.tracks = data;
-		});
-		
 		ServerService.GetServerDetails(function (data) {
 			$scope.server = data;
 
 			try {
-				$scope.selectedCars = data.CARS.split(';');
+                CarService.GetCars(function (carsData) {
+                    $scope.cars = carsData;
+                    $scope.selectedCars = $scope.cars.filter(function(elem){
+                        return data.CARS.split(';').indexOf(elem.name) > -1;
+                    });
+                    $scope.carsChanged();
+                });
 
-				var trackFilter = { trackName: data.TRACK };
-				if(data.CONFIG_TRACK) trackFilter.config = data.CONFIG_TRACK;
+                TrackService.GetTracks(function (tracksData) {
+                    $scope.tracks = tracksData;
 
-				$scope.selectedTracks = findInArray($scope.tracks, trackFilter);
-				$scope.selectedTyres = data.LEGAL_TYRES.split(';');
+                    var trackFilter = { trackName: data.TRACK };
+                    if(data.CONFIG_TRACK) trackFilter.config = data.CONFIG_TRACK;
+
+                    $scope.selectedTracks = findInArray($scope.tracks, trackFilter);
+                    $scope.selectedTyres = data.LEGAL_TYRES?data.LEGAL_TYRES.split(';'):[];
+                    $scope.trackChanged();
+                });
 
 				data.LOOP_MODE = data.LOOP_MODE == 1;
 				data.LOCKED_ENTRY_LIST = data.LOCKED_ENTRY_LIST == 1;
@@ -212,9 +215,6 @@ angular.module('acServerManager')
 			} catch (e) {
 				console.log('Error - ' + e);
 			}
-			
-			$scope.carsChanged();
-			$scope.trackChanged();
 		});
 		
 		WeatherService.GetWeather(function (data) {
@@ -230,13 +230,20 @@ angular.module('acServerManager')
 		};
 		
 		$scope.carsChanged = function() {
-			if ($scope.selectedCars.length == 0) {
+			if (!$scope.selectedCars || $scope.selectedCars.length == 0) {
+                $scope.selectedCars = [];
 				$scope.tyres = [];
 				return;
 			}
 
 			try {
-				TyreService.GetTyres($scope.selectedCars.join(','), function(result) {				
+				var cars = $scope.selectedCars.map(function(elem){
+                    return elem.name;
+                }).join(',');
+
+
+				TyreService.GetTyres(cars, function(result) {
+
 					//Restructure the object to something that is nicer to format
 					var tyreTypes = {};
 					angular.forEach(result, function(value, key) {
@@ -308,7 +315,7 @@ angular.module('acServerManager')
 		
 		$scope.trackChanged = function() {
 			var track = $scope.selectedTracks;
-			if (track !== null) {
+			if (track && track !== null) {
 				if (track.config) {
 					$scope.config = track.config;
 					$scope.server.CONFIG_TRACK = $scope.config;
@@ -330,6 +337,12 @@ angular.module('acServerManager')
 				}
 			}
 		};
+
+		$scope.deleteCar = function(car){
+            var index = $scope.selectedCars.indexOf(car);
+            $scope.selectedCars.splice(index,1);
+            $scope.carsChanged();
+		};
 			
 		$scope.submit = function() {
 			$scope.$broadcast('show-errors-check-validity');
@@ -346,11 +359,13 @@ angular.module('acServerManager')
 				data.LOOP_MODE = $scope.server.LOOP_MODE ? 1 : 0;
 				data.PICKUP_MODE_ENABLED = $scope.server.PICKUP_MODE_ENABLED ? 1 : 0;
 				data.REGISTER_TO_LOBBY = $scope.server.REGISTER_TO_LOBBY ? 1 : 0;
-				data.CARS = $scope.selectedCars.join(';');
+				data.CARS = $scope.selectedCars.map(function(elem){
+                    return elem.name;
+                }).join(';');
 				data.TRACK = $scope.selectedTracks.trackName; //TODO: Multi-track
 				data.SUN_ANGLE = getSunAngle($scope.hours, $scope.mins);
 
-				if($scope.selectedTyres.length && $scope.selectedTyres.length !== $scope.tyres.length)
+				if($scope.selectedTyres && $scope.selectedTyres.length && $scope.selectedTyres.length !== $scope.tyres.length)
                 	data.LEGAL_TYRES = $scope.selectedTyres.join(';');
 				else
                     data.LEGAL_TYRES = '';
