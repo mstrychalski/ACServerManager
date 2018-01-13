@@ -589,7 +589,6 @@ app.get('/api/tracks', function (req, res) {
                     var jsonPath = uiTrackPath + '/' + subtrackNames[subtrackName] + '/ui_track.json';
                     if(fs.existsSync(jsonPath)){
                         trackDetails = JSON.parse(fs.readFileSync(jsonPath));
-                        console.log(trackDetails['name']);
                     }
                     var track = {
                         name: trackDetails['name'],
@@ -667,8 +666,22 @@ app.get('/api/tracks/:track/:config/image', function (req, res) {
 // get cars available on server
 app.get('/api/cars', function (req, res) {
 	try {
-		var cars = fs.readdirSync(contentPath + "/cars");
-		res.status(200);
+		var carNames = fs.readdirSync(contentPath + "/cars");
+        var cars = [];
+        var details = fs.readFileSync(contentPath + '/cars/abarth500/ui/ui_car.json', 'utf-8');
+		
+        for (var carName in carNames){
+        	var jsonPath = contentPath + "/cars/" + carNames[carName] + '/ui/ui_car.json';
+			if(fs.existsSync(jsonPath)){
+                var details = JSON.parse(fs.readFileSync(jsonPath, 'utf-8').replace(/(\r\n|\n|\r|\t)/gm,""));
+                cars.push({
+					name: carNames[carName],
+					fullName: details['name']
+                });
+			}
+		}
+
+        res.status(200);
 		res.send(cars);
 	} catch (e) {
 		console.log('Error: GET/api/cars - ' + e);
