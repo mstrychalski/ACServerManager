@@ -453,6 +453,20 @@ angular.module('acServerManager')
 		$scope.closeAlert = function(index) {
 			$scope.alerts.splice(index, 1);
 		};
+
+        var last_valid_selection = null;
+        $scope.$watch('selectedCars.length', function(length) {
+            $scope.carSelectValid = length <= 9;
+            $scope.carSelectFull = length >= 9;
+
+            if (!$scope.carSelectValid) {
+                $scope.selectedCars = last_valid_selection;
+                $scope.carsChanged();
+            } else {
+                last_valid_selection = $scope.selectedCars;
+            }
+
+        });
 		
 		function getTime(sunAngle) {
 			var baseLine = new Date(2000, 1, 1, 13, 0, 0, 0);

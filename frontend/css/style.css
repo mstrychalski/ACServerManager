@@ -133,3 +133,7 @@ body { padding-top: 0px;}
 .car-images-container .car-image img {
     max-height: 100px;
 }
+
+select.disabled option {
+    color: #e5e5e5;
+}
