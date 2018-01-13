@@ -710,6 +710,21 @@ app.get('/api/cars/:car', function (req, res) {
 	}
 });
 
+app.get('/api/cars/:car/image', function (req, res) {
+    try {
+        res.status(200);
+		var skinsPath = contentPath + '/cars/' + req.params.car + '/skins';
+        var skins = fs.readdirSync(skinsPath);
+        var image = fs.readFileSync(contentPath + '/cars/' + req.params.car + '/skins/' + skins[0] + '/preview.jpg');
+        res.contentType('image/jpeg');
+        res.send(image);
+    } catch (e) {
+        console.log('Error: GET/api/tracks/:track/image - ' + e);
+        res.status(500);
+        res.send('Application error');
+    }
+});
+
 // get entry list
 app.get('/api/entrylist', function (req, res) {
 	try {
