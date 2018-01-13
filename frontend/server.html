@@ -163,7 +163,7 @@
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label>Cars</label>
-											<select multiple size="10" class="form-control" ng-model="selectedCars" ng-options="car as car.fullName for car in cars" ng-change="carsChanged()"></select>
+											<select multiple size="10" class="form-control" ng-model="selectedCars" ng-options="car as car.fullName for car in cars | orderBy:'fullName'" ng-change="carsChanged()"></select>
 										</div>
 										<div class="car-images-container">
 											<div ng-repeat="car in selectedCars" class="car-image">
@@ -180,7 +180,7 @@
 												<div class="form-group">
 													<label>Tracks</label>
 
-													<select class="form-control" ng-model="selectedTracks" ng-options="track as track.name for track in tracks" ng-change="trackChanged()"></select>
+													<select class="form-control" ng-model="selectedTracks" ng-options="track as track.name for track in tracks | orderBy:'name'" ng-change="trackChanged()"></select>
 												</div>
 											</div>
 										</div>
