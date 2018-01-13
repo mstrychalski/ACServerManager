@@ -198,12 +198,12 @@ angular.module('acServerManager')
 
 				$scope.selectedTracks = findInArray($scope.tracks, trackFilter);
 				$scope.selectedTyres = data.LEGAL_TYRES.split(';');
-			
+
 				data.LOOP_MODE = data.LOOP_MODE == 1;
 				data.LOCKED_ENTRY_LIST = data.LOCKED_ENTRY_LIST == 1;
 				data.PICKUP_MODE_ENABLED = data.PICKUP_MODE_ENABLED == 1;
 				data.REGISTER_TO_LOBBY = data.REGISTER_TO_LOBBY == 1;
-			
+
 				if(data.SUN_ANGLE > 0){
 					var time = getTime(data.SUN_ANGLE);
 					$scope.hours = time.getHours();
@@ -275,18 +275,21 @@ angular.module('acServerManager')
 						tyre.description = description.trim();
 						$scope.tyres.push(tyre);
 					});
-					
-					//Remove any selected tyres that are no longer available after a car change
-					$scope.selectedTyres = $scope.selectedTyres.filter(function(element) {
-						var found = findInArray($scope.tyres, { value: element });
-						return found !== null;
-					});
-					
-					//If there are no selected tyres in cfg, this is the same as having all available
-					if ($scope.selectedTyres.length === 0) {
-						angular.forEach($scope.tyres, function(value, key) {
-							$scope.selectedTyres.push(value.value);
-						});
+
+
+					if($scope.selectedTyres){
+                        //Remove any selected tyres that are no longer available after a car change
+                        $scope.selectedTyres = $scope.selectedTyres.filter(function(element) {
+                            var found = findInArray($scope.tyres, { value: element });
+                            return found !== null;
+                        });
+
+                        //If there are no selected tyres in cfg, this is the same as having all available
+                        if ($scope.selectedTyres.length === 0) {
+                            angular.forEach($scope.tyres, function(value, key) {
+                                $scope.selectedTyres.push(value.value);
+                            });
+                        }
 					}
 				});
 			} catch (e) {
@@ -347,9 +350,10 @@ angular.module('acServerManager')
 				data.TRACK = $scope.selectedTracks.trackName; //TODO: Multi-track
 				data.SUN_ANGLE = getSunAngle($scope.hours, $scope.mins);
 
-				if (typeof $scope.tyres.length === 'undefined' || !$scope.tyres.length){
-					data.LEGAL_TYRES = $scope.selectedTyres.length === $scope.tyres.length ? '' : $scope.selectedTyres.join(';');
-				}
+				if($scope.selectedTyres.length && $scope.selectedTyres.length !== $scope.tyres.length)
+                	data.LEGAL_TYRES = $scope.selectedTyres.join(';');
+				else
+                    data.LEGAL_TYRES = '';
 				
 				var saved = true;
 				
@@ -465,7 +469,7 @@ angular.module('acServerManager')
 		
 		function findInArray(arr, search) {
 			var found = $filter('filter')(arr, search, true);
-			if (found.length) {
+			if (found && found.length) {
 				return found[0];
 			}
 			
