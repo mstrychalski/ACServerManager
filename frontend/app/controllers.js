@@ -21,11 +21,11 @@ angular.module('acServerManager')
 		
 		(function getServerStatus() {
 			ServerService.GetServerStatus(function(data){
-				if(!$scope.consolePaused){
+				$scope.serverStatus = data;
+                if(!$scope.consolePaused){
                     var scroller = document.getElementById("ac-log");
                     scroller.scrollTop = scroller.scrollHeight;
-				}
-				$scope.serverStatus = data;
+                }
 				$timeout(getServerStatus, 2000);
 			});
 		})();
