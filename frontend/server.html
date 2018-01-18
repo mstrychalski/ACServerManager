@@ -195,18 +195,22 @@
 										</div>
 										
 										<div class="row">
-											<div class="col-sm-12">
+											<div>
 												<div class="col-sm-6">
-													<div ng-show="trackDetails">
-														<p>Description: <span>{{trackDetails.description}}</span><p>
-														<p>Country: <span>{{trackDetails.country}}</span><p>
-														<p>City: <span>{{trackDetails.city}}</span><p>
-														<p>Pit Boxes: <span>{{trackDetails.pitboxes}}</span><p>
+													<div class="trackImage">
+														<div ng-show="trackDetails">
+															<p>Description: <span>{{trackDetails.description}}</span><p>
+															<p>Country: <span>{{trackDetails.country}}</span><p>
+															<p>City: <span>{{trackDetails.city}}</span><p>
+															<p>Pit Boxes: <span>{{trackDetails.pitboxes}}</span><p>
+														</div>
+														<img ng-src="{{trackImage}}" style="width: 100%"/>
 													</div>
 												</div>
-												
 												<div class="col-sm-6">
-													<img ng-src="{{trackImage}}" style="max-width: 100%" />
+													<div>
+														<img ng-src="{{trackMap}}"  style="max-width: 100%"/>
+													</div>
 												</div>
 											</div>
 										</div>

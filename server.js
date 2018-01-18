@@ -589,14 +589,14 @@ app.get('/api/tracks', function (req, res) {
                     var jsonPath = uiTrackPath + '/' + subtrackNames[subtrackName] + '/ui_track.json';
                     if(fs.existsSync(jsonPath)){
                         trackDetails = JSON.parse(fs.readFileSync(jsonPath));
-                    }
-                    var track = {
-                        name: trackDetails['name'],
-                        trackName: trackNames[trackName],
-						config: subtrackNames[subtrackName]
-                    };
-                    tracks.push(track);
-                }
+                        var track = {
+                            name: trackDetails['name'],
+                            trackName: trackNames[trackName],
+                            config: subtrackNames[subtrackName]
+                        };
+                        tracks.push(track);
+					}
+				}
             }
         }
 
@@ -625,7 +625,7 @@ app.get('/api/tracks/:track', function (req, res) {
 // get track image
 app.get('/api/tracks/:track/image', function (req, res) {
 	try {
-		res.status(200);;
+		res.status(200);
 		var image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/preview.png');
 		res.contentType('image/jpeg');
 		res.send(image);
@@ -634,6 +634,20 @@ app.get('/api/tracks/:track/image', function (req, res) {
 		res.status(500);
 		res.send('Application error');
 	}
+});
+
+// get track map
+app.get('/api/tracks/:track/map', function (req, res) {
+    try {
+        res.status(200);
+        var image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/outline.png');
+        res.contentType('image/jpeg');
+        res.send(image);
+    } catch (e) {
+        console.log('Error: GET/api/tracks/:track/map - ' + e);
+        res.status(500);
+        res.send('Application error');
+    }
 });
 
 // get track config
@@ -661,6 +675,20 @@ app.get('/api/tracks/:track/:config/image', function (req, res) {
 		res.status(500);
 		res.send('Application error');
 	}
+});
+
+// get track config image
+app.get('/api/tracks/:track/:config/map', function (req, res) {
+    try {
+        res.status(200);;
+        var image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/outline.png');
+        res.contentType('image/jpeg');
+        res.send(image);
+    } catch (e) {
+        console.log('Error: GET/api/tracks/:track/:config/map - ' + e);
+        res.status(500);
+        res.send('Application error');
+    }
 });
 
 // get cars available on server

@@ -325,6 +325,7 @@ angular.module('acServerManager')
 					});
 					
 					$scope.trackImage = '/api/tracks/' + track.trackName + '/' + $scope.server.CONFIG_TRACK + '/image';
+                    $scope.trackMap = '/api/tracks/' + track.trackName + '/' + $scope.server.CONFIG_TRACK + '/map';
 				} else {
 					$scope.configs = null;
 					$scope.server.CONFIG_TRACK = '';
@@ -334,6 +335,7 @@ angular.module('acServerManager')
 					});
 					
 					$scope.trackImage = '/api/tracks/' + track.trackName + '/image';
+                    $scope.trackMap = '/api/tracks/' + track.trackName + '/map';
 				}
 			}
 		};

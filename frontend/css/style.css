@@ -137,3 +137,25 @@ body { padding-top: 0px;}
 select.disabled option {
     color: #e5e5e5;
 }
+
+.trackImage {
+    position: relative;
+}
+
+.trackImage > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    color: white;
+    background: rgba(0,0,0,0.3);
+}
+
+.trackImage > div p  {
+    font-size: 14px;
+    line-height: 1;
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
+}
