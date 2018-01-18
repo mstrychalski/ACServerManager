@@ -185,3 +185,7 @@ select.disabled option {
 .session-tabs li.session-enabled a {
     border-bottom: 2px solid #2fbe3b !important;
 }
+
+pre.paused {
+    background: #ffeaea;
+}

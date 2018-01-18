@@ -27,6 +27,7 @@ var sTrackerServerPid;
 var acServerLogName;
 
 var currentSession;
+var currentLog;
 var modTyres;
 
 try {
@@ -161,7 +162,7 @@ app.get('/api/server', function (req, res) {
 app.get('/api/server/status', function (req, res) {
 	try {
 		res.status(200);
-		res.send({ session: currentSession });
+		res.send({ session: currentSession, log: currentLog });
 	} catch (e) {
 		console.log('Error: GET/api/server/status - ' + e);
 		res.status(500);
@@ -975,6 +976,7 @@ app.post('/api/acserver', function (req, res) {
 		acServerPid = acServer.pid;
 		acServerLogName = getDateTimeString() + '_log.txt';
 
+        currentLog = '';
 		acServer.stdout.on('data', function (data) {
 			if (acServerStatus === 0) {
 				acServerStatus = -1;
@@ -985,7 +987,7 @@ app.post('/api/acserver', function (req, res) {
 			if (dataString.indexOf('OK') !== -1) {
 				acServerStatus = 1;
 			}
-			
+
 		   if (dataString.indexOf('stracker has been restarted') !== -1) {
 				sTrackerServerStatus = 1
 			}
@@ -993,6 +995,7 @@ app.post('/api/acserver', function (req, res) {
 			if (dataString.indexOf('PAGE: /ENTRY') === -1) {
 				//Log to console and file
 				console.log(dataString);
+                currentLog += dataString;
 				writeLogFile('server_' + acServerLogName, getDateTimeString() + ': ' + data);
 
 				//Set current session

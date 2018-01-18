@@ -161,6 +161,7 @@
 								<div class="row">
 									<div class="col-sm-12">
 										<p>Current Session: {{serverStatus.session}}</p>
+										<pre id="ac-log" style="max-height: 500px;" ng-class="{'paused': consolePaused}" ng-click="consolePaused = !consolePaused">{{serverStatus.log}}</pre>
 									</div>
 								</div>
 							</fieldset>  
