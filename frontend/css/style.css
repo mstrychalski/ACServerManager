@@ -99,10 +99,14 @@ body { padding-top: 0px;}
 	display: block; !important
 }
 
+.car-images-container {
+    margin-bottom: 25px;
+}
+
 .car-images-container .car-image {
     display: inline-block;
     position: relative;
-    margin: 5px;
+    margin: 3px;
 }
 
 .car-images-container .car-image .delete {
@@ -131,7 +135,8 @@ body { padding-top: 0px;}
 }
 
 .car-images-container .car-image img {
-    max-height: 100px;
+    max-height: 110px;
+    border-radius: 4px;
 }
 
 select.disabled option {
@@ -140,22 +145,43 @@ select.disabled option {
 
 .trackImage {
     position: relative;
+    max-width: 355px;
+    border-radius: 4px;
+    overflow: hidden;
 }
 
-.trackImage > div {
+.trackImage .dimmer {
     position: absolute;
-    top: 0;
     left: 0;
-    bottom: 0;
     right: 0;
-    padding: 10px;
-    color: white;
-    background: rgba(0,0,0,0.3);
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 1;
 }
 
-.trackImage > div p  {
-    font-size: 14px;
-    line-height: 1;
-    color: white;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 1);
+.trackImage .trackMap {
+    max-width: 100%;
+    position: absolute;
+    max-height: 100%;
+    display: block;
+    margin: auto;
+    left: 0;
+    right: 0;
+    z-index: 2;
+}
+
+.session-tabs {
+    margin-bottom: 10px;
+}
+
+.session-tabs li a {
+    background: #eee;
+    color: black;
+    border: 1px solid #ccc;
+    border-bottom: 2px solid #be2f34 !important;
+}
+
+.session-tabs li.session-enabled a {
+    border-bottom: 2px solid #2fbe3b !important;
 }

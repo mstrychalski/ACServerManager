@@ -216,6 +216,11 @@ angular.module('acServerManager')
 				console.log('Error - ' + e);
 			}
 		});
+
+		$scope.changeSession = function(session) {
+			$scope.selectedSession = session;
+		};
+
 		
 		WeatherService.GetWeather(function (data) {
 			$scope.weatherSettings = data;
