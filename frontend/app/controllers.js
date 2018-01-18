@@ -535,16 +535,16 @@ angular.module('acServerManager')
 			}
 		});
 		
-		ServerService.GetServerDetail('cars', function (data) {
+		ServerService.GetServerCars(function (data) {
 			try {
-				$scope.cars = data.value.split(';');
-				$scope.newEntry.MODEL = $scope.cars[0];
+				$scope.cars = data.data;
+				$scope.newEntry.CAR = $scope.cars[0];
 				$scope.selectedCarChanged();
 			} catch (e) {
 				console.log('Error - ' + e);
 			}
 		});
-		
+
 		EntryListService.GetEntryList(function (data) {
 			angular.forEach(data, function(value, key) {
 				if (key.indexOf('CAR_') === 0) {
@@ -559,7 +559,7 @@ angular.module('acServerManager')
 		});
 		
 		$scope.selectedCarChanged = function() {
-			CarService.GetSkins($scope.newEntry.MODEL, function(data) {
+			CarService.GetSkins($scope.newEntry.CAR.MODEL, function(data) {
 				$scope.skins = data.skins;
 				$scope.newEntry.SKIN = $scope.skins[0];
 			});
@@ -582,13 +582,17 @@ angular.module('acServerManager')
 				if ($scope.random) {
 					entry.SKIN = $scope.skins[Math.floor(Math.random() * $scope.skins.length)];
 				}
+                entry.MODEL = entry.CAR.MODEL;
+                entry.FULL_NAME = entry.CAR.FULL_NAME;
+
+                delete entry.CAR;
 				$scope.entryList.push(entry);
 			}
 			
 			$scope.newEntry = {
 				DRIVERNAME: '',
 				TEAM: '',
-				MODEL: $scope.cars[0],
+				CAR: $scope.cars[0],
 				SKIN: '',
 				GUID: '',
 				SPECTATOR_MODE: '',
@@ -600,6 +604,7 @@ angular.module('acServerManager')
 		$scope.saveChanges = function() {	
 			var data = {};
 			angular.forEach($scope.entryList, function(value) {
+				delete value.FULL_NAME;
 				value.SPECTATOR_MODE = value.SPECTATOR_MODE ? 1 : 0;
 				data['CAR_' + $scope.entryList.indexOf(value)] = value;
 			});

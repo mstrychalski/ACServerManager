@@ -70,6 +70,12 @@ angular.module('acServerManager.services', ['ngResource']).
                     callback(result);
                 });
             },
+            GetServerCars: function(callback) {
+                var resource = $resource('/api/server-cars');
+                var result = resource.get(function() {
+                    callback(result);
+                });
+            }
         };
     }).
 	factory('BookService', function($resource) {

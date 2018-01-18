@@ -117,6 +117,15 @@ function buildContentPath(serverPath) {
 	return contentPath;
 }
 
+function getCarDetails(car){
+    var jsonPath = contentPath + "/cars/" + car + '/ui/ui_car.json';
+    if(fs.existsSync(jsonPath)){
+        return JSON.parse(fs.readFileSync(jsonPath, 'utf-8').replace(/(\r\n|\n|\r|\t)/gm,""));
+    }
+
+    return null;
+}
+
 var app = express();
 if (username !== '' && password !== '') {
 	app.use(basicAuth(username, password));
@@ -170,6 +179,27 @@ app.get('/api/server/:id', function (req, res) {
 		res.status(500);
 		res.send('Application error');
 	}
+});
+
+// get server cars array with full names
+app.get('/api/server-cars', function (req, res) {
+    try {
+        res.status(200);
+        var value = config.SERVER['CARS'];
+        var cars = value.split(';');
+        cars = cars.map(function(car){
+            var details = getCarDetails(car);
+            return {
+                'MODEL': car,
+                'FULL_NAME': details?details['name']:car
+            };
+        });
+        res.send({data: cars});
+    } catch (e) {
+        console.log('Error: GET/server-cars - ' + e);
+        res.status(500);
+        res.send('Application error');
+    }
 });
 
 // post new server config
@@ -696,12 +726,10 @@ app.get('/api/cars', function (req, res) {
 	try {
 		var carNames = fs.readdirSync(contentPath + "/cars");
         var cars = [];
-        var details = fs.readFileSync(contentPath + '/cars/abarth500/ui/ui_car.json', 'utf-8');
-		
+
         for (var carName in carNames){
-        	var jsonPath = contentPath + "/cars/" + carNames[carName] + '/ui/ui_car.json';
-			if(fs.existsSync(jsonPath)){
-                var details = JSON.parse(fs.readFileSync(jsonPath, 'utf-8').replace(/(\r\n|\n|\r|\t)/gm,""));
+        	var details = getCarDetails(carNames[carName]);
+			if(details){
                 cars.push({
 					name: carNames[carName],
 					fullName: details['name']
@@ -757,7 +785,14 @@ app.get('/api/cars/:car/image', function (req, res) {
 app.get('/api/entrylist', function (req, res) {
 	try {
 		res.status(200);
-		res.send(entryList);
+		var finalEntryList = {};
+        Object.keys(entryList).forEach(function(key){
+            var car = entryList[key];
+            var details = getCarDetails(car.MODEL);
+            car.FULL_NAME = details?details['name']:car.MODEL;
+            finalEntryList[key] = car;
+		});
+		res.send(finalEntryList);
 	} catch (e) {
 		console.log('Error: GET/api/entrylist - ' + e);
 		res.status(500);

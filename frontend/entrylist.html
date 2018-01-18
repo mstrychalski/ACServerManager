@@ -139,7 +139,7 @@
 									<div class="col-sm-5">
 										<div class="form-group">
 											<label>Car</label>
-											<select class="form-control" ng-model="newEntry.MODEL" ng-options="car as car for car in cars" ng-change="selectedCarChanged()"></select>
+											<select class="form-control" ng-model="newEntry.CAR" ng-options="car as car.FULL_NAME for car in cars" ng-change="selectedCarChanged()"></select>
 										</div>
 									</div>
 									
@@ -208,7 +208,7 @@
 														<td>{{entry.DRIVERNAME}}</td>
 														<td>{{entry.TEAM}}</td>
 														<td>{{entry.GUID}}</td>
-														<td>{{entry.MODEL}}</td>
+														<td>{{entry.FULL_NAME}}</td>
 														<td>{{entry.SKIN}}</td>
 														<td>{{entry.SPECTATOR_MODE ? 'Yes' : 'No'}}</td>
 														<td>{{entry.BALLAST}}</td>
