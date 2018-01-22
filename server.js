@@ -995,7 +995,7 @@ app.post('/api/acserver', function (req, res) {
 			if (dataString.indexOf('PAGE: /ENTRY') === -1) {
 				//Log to console and file
 				console.log(dataString);
-                currentLog += dataString;
+                //currentLog += dataString;
 				writeLogFile('server_' + acServerLogName, getDateTimeString() + ': ' + data);
 
 				//Set current session
