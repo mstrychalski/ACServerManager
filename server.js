@@ -996,7 +996,7 @@ app.post('/api/acserver', function (req, res) {
 				//Log to console and file
 				console.log(dataString);
                 currentLog += dataString;
-                var currentLogLines = textblock.split('\n');
+                var currentLogLines = currentLog.split('\n');
                 if(currentLogLines.length > 500){
                     currentLogLines.splice(0,(currentLogLines.length - 500));
                     currentLog = currentLogLines.join('\n');
