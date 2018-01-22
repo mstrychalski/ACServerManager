@@ -644,6 +644,11 @@ app.get('/api/tracks', function (req, res) {
 app.get('/api/tracks/:track', function (req, res) {
 	try {
 		var trackDetails = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/ui_track.json', 'utf-8');
+        var dlcDetails = contentPath + '/tracks/' + req.params.track + '/ui/dlc_ui_track.json';
+        if (fs.existsSync(dlcDetails)){
+            dlcDetails = JSON.parse(fs.readFileSync(dlcDetails, 'utf-8'));
+            trackDetails.url = dlcDetails.url;
+        }
 		res.status(200);
 		res.send(trackDetails);
 	} catch (e) {
@@ -657,7 +662,13 @@ app.get('/api/tracks/:track', function (req, res) {
 app.get('/api/tracks/:track/image', function (req, res) {
 	try {
 		res.status(200);
-		var image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/preview.png');
+        var image;
+        var dlcPreview = contentPath + '/tracks/' + req.params.track + '/ui/dlc_preview.png';
+        if (fs.existsSync(dlcPreview)){
+            image = fs.readFileSync(dlcPreview);
+        } else {
+            image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/preview.png');
+        }
 		res.contentType('image/jpeg');
 		res.send(image);
 	} catch (e) {
@@ -684,7 +695,12 @@ app.get('/api/tracks/:track/map', function (req, res) {
 // get track config
 app.get('/api/tracks/:track/:config', function (req, res) {
 	try {
-		var trackDetails = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/ui_track.json', 'utf-8');
+		var trackDetails = JSON.parse(fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/ui_track.json', 'utf-8'));
+        var dlcDetails = contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/dlc_ui_track.json';
+        if (fs.existsSync(dlcDetails)){
+            dlcDetails = JSON.parse(fs.readFileSync(dlcDetails, 'utf-8'));
+            trackDetails.url = dlcDetails.url;
+        }
 		res.status(200);
 		res.send(trackDetails);
 	} catch (e) {
@@ -697,8 +713,15 @@ app.get('/api/tracks/:track/:config', function (req, res) {
 // get track config image
 app.get('/api/tracks/:track/:config/image', function (req, res) {
 	try {
-		res.status(200);;
-		var image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/preview.png');
+		res.status(200);
+
+        var image;
+        var dlcPreview = contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/dlc_preview.png';
+        if (fs.existsSync(dlcPreview)){
+            image = fs.readFileSync(dlcPreview);
+        } else {
+            image = fs.readFileSync(contentPath + '/tracks/' + req.params.track + '/ui/' + req.params.config + '/preview.png');
+        }
 		res.contentType('image/jpeg');
 		res.send(image);
 	} catch (e) {
@@ -770,9 +793,15 @@ app.get('/api/cars/:car', function (req, res) {
 app.get('/api/cars/:car/image', function (req, res) {
     try {
         res.status(200);
-		var skinsPath = contentPath + '/cars/' + req.params.car + '/skins';
-        var skins = fs.readdirSync(skinsPath);
-        var image = fs.readFileSync(contentPath + '/cars/' + req.params.car + '/skins/' + skins[0] + '/preview.jpg');
+        var image;
+        var dlcPreview = contentPath + '/cars/' + req.params.car + '/ui/dlc_preview.png';
+        if (fs.existsSync(dlcPreview)){
+            image = fs.readFileSync(dlcPreview);
+        } else {
+            var skinsPath = contentPath + '/cars/' + req.params.car + '/skins';
+            var skins = fs.readdirSync(skinsPath);
+            image = fs.readFileSync(contentPath + '/cars/' + req.params.car + '/skins/' + skins[0] + '/preview.jpg');
+        }
         res.contentType('image/jpeg');
         res.send(image);
     } catch (e) {
